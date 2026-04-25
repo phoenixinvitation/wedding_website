@@ -7,7 +7,7 @@ import { toast } from "sonner";
 type Wish = { name: string; relation: string; message: string };
 const COLLAPSED_WISH_COUNT = 4;
 const STORAGE_KEY = "wedding-blessings";
-const BLESSINGS_API_URL = import.meta.env.VITE_BLESSINGS_API_URL?.trim();
+const BLESSINGS_API_URL = import.meta.env.VITE_BLESSINGS_API_URL?.trim() || "/api/blessings";
 
 const seed: Wish[] = [
   { name: "Anitha Subramanian", relation: "Family", message: "Wishing you a lifetime of love, laughter and joy. May your bond grow stronger with every passing day." },
