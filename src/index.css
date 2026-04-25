@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@300;400;500;600;700&family=Cormorant+Garamond:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Wedding palette — Maroon, Gold, Ivory */
+    --background: 42 64% 95%;          /* Ivory #FFF8E7 */
+    --foreground: 0 0% 10%;            /* Dark #1A1A1A */
+
+    --card: 42 64% 97%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 42 64% 97%;
+    --popover-foreground: 0 0% 10%;
+
+    --primary: 345 100% 25%;           /* Maroon #800020 */
+    --primary-foreground: 42 64% 95%;
+
+    --secondary: 46 65% 52%;           /* Gold #D4AF37 */
+    --secondary-foreground: 0 0% 10%;
+
+    --muted: 42 40% 90%;
+    --muted-foreground: 0 0% 30%;
+
+    --accent: 46 65% 52%;
+    --accent-foreground: 345 100% 25%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 42 64% 95%;
+
+    --border: 46 40% 80%;
+    --input: 46 40% 85%;
+    --ring: 345 100% 25%;
+
+    --radius: 0.75rem;
+
+    /* Specials */
+    --gold: 46 65% 52%;
+    --gold-light: 46 75% 65%;
+    --maroon-deep: 345 100% 18%;
+    --ivory: 42 64% 95%;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(180deg, hsl(345 100% 8% / 0.55) 0%, hsl(345 100% 12% / 0.75) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(46 75% 65%), hsl(46 65% 45%));
+    --gradient-maroon: linear-gradient(135deg, hsl(345 100% 25%), hsl(345 100% 18%));
+
+    /* Shadows */
+    --shadow-elegant: 0 10px 40px -10px hsl(345 100% 25% / 0.25);
+    --shadow-soft: 0 4px 20px -4px hsl(345 100% 25% / 0.15);
+    --shadow-gold: 0 0 30px hsl(46 65% 52% / 0.3);
+
+    /* Sidebar (kept for shadcn) */
+    --sidebar-background: 42 64% 95%;
+    --sidebar-foreground: 0 0% 10%;
+    --sidebar-primary: 345 100% 25%;
+    --sidebar-primary-foreground: 42 64% 95%;
+    --sidebar-accent: 46 65% 52%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 46 40% 80%;
+    --sidebar-ring: 345 100% 25%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 0.02em;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: 'Playfair Display', serif;
+  }
+  .font-script {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+  .gold-divider {
+    @apply mx-auto h-px w-24 my-4;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold)), transparent);
+  }
+  .gold-divider-thick {
+    @apply mx-auto h-[2px] w-32 my-6;
+    background: linear-gradient(90deg, transparent, hsl(var(--gold)), transparent);
+  }
+  .section-heading {
+    @apply font-display text-4xl md:text-5xl text-primary text-center;
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+  }
+  .reveal.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-left {
+    opacity: 0;
+    transform: translateX(-40px);
+    transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+  }
+  .reveal-left.in-view {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  .reveal-right {
+    opacity: 0;
+    transform: translateX(40px);
+    transition: opacity 0.9s ease-out, transform 0.9s ease-out;
+  }
+  .reveal-right.in-view {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@layer utilities {
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+  .bg-gold {
+    background-color: hsl(var(--gold));
+  }
+  .border-gold {
+    border-color: hsl(var(--gold));
+  }
+  .bg-gradient-gold {
+    background: var(--gradient-gold);
+  }
+  .bg-gradient-maroon {
+    background: var(--gradient-maroon);
+  }
+  .shadow-elegant {
+    box-shadow: var(--shadow-elegant);
+  }
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+  .shadow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+}
+
+/* Hero entrance animations */
+@keyframes hero-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-in-soft {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes divider-grow {
+  from { opacity: 0; transform: scaleX(0); }
+  to { opacity: 1; transform: scaleX(1); }
+}
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 0.6; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+@keyframes petal-fall {
+  0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; }
+  10% { opacity: 0.4; }
+  90% { opacity: 0.3; }
+  100% { transform: translateY(110vh) translateX(60px) rotate(360deg); opacity: 0; }
+}
+@keyframes gallery-reveal {
+  from { opacity: 0; transform: scale(1.1); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-hero-bg {
+  animation: fade-in-soft 1.2s ease-out forwards, hero-zoom 12s ease-out 1s forwards;
+}
+.animate-fade-up { animation: fade-up 0.9s ease-out both; }
+.animate-fade-soft { animation: fade-in-soft 0.9s ease-out both; }
+.animate-divider { animation: divider-grow 0.8s ease-out both; transform-origin: center; }
+.animate-scroll { animation: scroll-bounce 2s ease-in-out infinite; }
+.animate-gallery { animation: gallery-reveal 1s ease-out both; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-800 { animation-delay: 0.8s; }
+.delay-900 { animation-delay: 0.9s; }
+.delay-1000 { animation-delay: 1s; }
+.delay-1100 { animation-delay: 1.1s; }
+.delay-1200 { animation-delay: 1.2s; }
+
+/* Petals */
+.petal {
+  position: fixed;
+  top: -20px;
+  width: 14px;
+  height: 14px;
+  background: radial-gradient(circle at 30% 30%, hsl(var(--gold-light)), hsl(var(--gold)) 60%, hsl(345 100% 35%) 100%);
+  border-radius: 80% 0 80% 0;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.25;
+  animation: petal-fall linear infinite;
+}
