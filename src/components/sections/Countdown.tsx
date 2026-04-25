@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useLang } from "@/lib/LanguageContext";
 import { useReveal } from "@/hooks/useReveal";
 
-const TARGET = new Date("2026-09-12T12:00:00+05:30").getTime();
+const TARGET = Date.UTC(2026, 8, 12, 6, 30);
 
 const Countdown = () => {
   const { t } = useLang();
@@ -26,7 +26,7 @@ const Countdown = () => {
   return (
     <section className="bg-gradient-maroon py-20 sm:py-28 text-[hsl(var(--ivory))]" ref={ref}>
       <div className="container mx-auto max-w-5xl px-5">
-        <div className="reveal text-center">
+        <div className="reveal in-view text-center">
           <p className="mb-2 text-xs uppercase tracking-[0.5em] text-[hsl(var(--gold-light))]">~ The big day ~</p>
           <h2 className="section-heading !text-[hsl(var(--ivory))]">{t.countdown_title}</h2>
           <div className="gold-divider-thick" />
@@ -35,7 +35,7 @@ const Countdown = () => {
           {blocks.map((b, i) => (
             <div
               key={b.l}
-              className="reveal rounded-2xl border border-gold/40 bg-[hsl(var(--maroon-deep))]/40 p-6 text-center shadow-elegant backdrop-blur-sm sm:p-8"
+              className="reveal in-view rounded-2xl border border-gold/40 bg-[hsl(var(--maroon-deep))]/40 p-6 text-center shadow-elegant backdrop-blur-sm sm:p-8"
               style={{ transitionDelay: `${i * 100}ms` }}
             >
               <div className="font-display text-5xl font-medium tabular-nums text-[hsl(var(--gold-light))] sm:text-6xl md:text-7xl">
