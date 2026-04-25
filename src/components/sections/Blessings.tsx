@@ -7,7 +7,7 @@ import { toast } from "sonner";
 type Wish = { name: string; relation: string; message: string };
 const COLLAPSED_WISH_COUNT = 4;
 const STORAGE_KEY = "wedding-blessings";
-const BLESSINGS_API_URL = import.meta.env.VITE_BLESSINGS_API_URL as string | undefined;
+const BLESSINGS_API_URL = import.meta.env.VITE_BLESSINGS_API_URL?.trim();
 
 const seed: Wish[] = [
   { name: "Anitha Subramanian", relation: "Family", message: "Wishing you a lifetime of love, laughter and joy. May your bond grow stronger with every passing day." },
@@ -26,15 +26,39 @@ const normalizeWish = (wish: Partial<Wish>): Wish | null => {
   return { name, relation: relation || "Guest", message };
 };
 
+const normalizeWishList = (value: unknown): Wish[] => {
+  if (!Array.isArray(value)) return [];
+  return value.map(normalizeWish).filter((wish): wish is Wish => Boolean(wish));
+};
+
 const parseStoredWishes = (value: string | null): Wish[] | null => {
   if (!value) return null;
   try {
-    const parsed = JSON.parse(value);
-    if (!Array.isArray(parsed)) return null;
-    return parsed.map(normalizeWish).filter((wish): wish is Wish => Boolean(wish));
+    return normalizeWishList(JSON.parse(value));
   } catch {
     return null;
   }
+};
+
+const parseRemoteWishes = (value: unknown): Wish[] => {
+  if (Array.isArray(value)) return normalizeWishList(value);
+  if (!value || typeof value !== "object") return [];
+
+  const payload = value as { wishes?: unknown; record?: unknown };
+
+  if (Array.isArray(payload.wishes)) {
+    return normalizeWishList(payload.wishes);
+  }
+
+  if (payload.record && typeof payload.record === "object") {
+    const record = payload.record as { wishes?: unknown };
+    if (Array.isArray(record.wishes)) {
+      return normalizeWishList(record.wishes);
+    }
+    return normalizeWishList(payload.record);
+  }
+
+  return [];
 };
 
 const Blessings = () => {
@@ -54,28 +78,31 @@ const Blessings = () => {
   useEffect(() => {
     if (!BLESSINGS_API_URL) return;
 
+    const controller = new AbortController();
+
     const loadWishes = async () => {
       try {
-        const response = await fetch(BLESSINGS_API_URL);
+        const response = await fetch(BLESSINGS_API_URL, {
+          signal: controller.signal,
+          cache: "no-store",
+        });
         if (!response.ok) return;
 
         const data = await response.json();
-        const remoteWishes = Array.isArray(data) ? data : data.wishes;
-        if (!Array.isArray(remoteWishes)) return;
+        const normalized = parseRemoteWishes(data);
+        if (normalized.length === 0) return;
 
-        const normalized = remoteWishes
-          .map(normalizeWish)
-          .filter((wish): wish is Wish => Boolean(wish));
-
-        if (normalized.length > 0) {
-          setWishes(normalized);
-        }
-      } catch {
-        // Keep the local wishes visible if the remote source is unavailable.
+        setWishes(normalized);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(normalized));
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        // Keep local wishes when the remote source is unavailable.
       }
     };
 
     loadWishes();
+
+    return () => controller.abort();
   }, []);
 
   const submit = async (e: React.FormEvent) => {
@@ -86,17 +113,27 @@ const Blessings = () => {
 
     setWishes((current) => [wish, ...current]);
     setExpanded(false);
-    setName(""); setMessage(""); setOtherRelation(""); setRelation("Friend");
+    setName("");
+    setMessage("");
+    setOtherRelation("");
+    setRelation("Friend");
     toast.success(t.bless_thanks);
 
     if (!BLESSINGS_API_URL) return;
 
     try {
-      await fetch(BLESSINGS_API_URL, {
+      const response = await fetch(BLESSINGS_API_URL, {
         method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(wish),
       });
+      if (!response.ok) return;
+
+      const data = await response.json();
+      const normalized = parseRemoteWishes(data);
+      if (normalized.length > 0) {
+        setWishes(normalized);
+      }
     } catch {
       // The wish is already shown locally; remote sync can be retried on the next valid setup.
     }
@@ -204,7 +241,7 @@ const Blessings = () => {
               onClick={() => setExpanded((current) => !current)}
               className="inline-flex items-center gap-2 rounded-full border-2 border-gold px-8 py-3 text-sm uppercase tracking-[0.2em] text-primary transition-all hover:bg-gold hover:shadow-gold"
             >
-              {expanded ? t.bless_less : t.bless_more} {expanded ? "↑" : "↓"}
+              {expanded ? t.bless_less : t.bless_more} {expanded ? "^" : "v"}
             </button>
           </div>
         )}
