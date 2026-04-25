@@ -4,26 +4,28 @@ import { useReveal } from "@/hooks/useReveal";
 import { Heart, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
-type Wish = { name: string; relation: string; message: string };
+type Wish = { name: string; relation: string; message: string; ownerId: string };
+const OWNER_ID_KEY = "wedding-owner-id";
 const COLLAPSED_WISH_COUNT = 4;
 const STORAGE_KEY = "wedding-blessings";
 const BLESSINGS_API_URL = import.meta.env.VITE_BLESSINGS_API_URL?.trim() || "/api/blessings";
 
 const seed: Wish[] = [
-  { name: "Anitha Subramanian", relation: "Family", message: "Wishing you a lifetime of love, laughter and joy. May your bond grow stronger with every passing day." },
-  { name: "Ravi Krishnan", relation: "Friend", message: "So happy for both of you! May your journey together be as beautiful as your love story." },
-  { name: "Priya Mohan", relation: "Colleague", message: "Congratulations Karthik & Divya! Wishing you a marriage full of warmth, kindness and many adventures." },
-  { name: "Suresh Iyer", relation: "Family", message: "Blessings from all of us. May Lord Ganesha shower his choicest blessings on the new beginning." },
-  { name: "Meera Venkat", relation: "Friend", message: "Two beautiful souls becoming one. So thrilled to celebrate this with you." },
-  { name: "Arun Pillai", relation: "Colleague", message: "Wishing the both of you a happily ever after. Many congratulations!" },
+  { name: "Anitha Subramanian", relation: "Family", message: "Wishing you a lifetime of love, laughter and joy. May your bond grow stronger with every passing day.", ownerId: "seed-1" },
+  { name: "Ravi Krishnan", relation: "Friend", message: "So happy for both of you! May your journey together be as beautiful as your love story.", ownerId: "seed-2" },
+  { name: "Priya Mohan", relation: "Colleague", message: "Congratulations Karthik & Divya! Wishing you a marriage full of warmth, kindness and many adventures.", ownerId: "seed-3" },
+  { name: "Suresh Iyer", relation: "Family", message: "Blessings from all of us. May Lord Ganesha shower his choicest blessings on the new beginning.", ownerId: "seed-4" },
+  { name: "Meera Venkat", relation: "Friend", message: "Two beautiful souls becoming one. So thrilled to celebrate this with you.", ownerId: "seed-5" },
+  { name: "Arun Pillai", relation: "Colleague", message: "Wishing the both of you a happily ever after. Many congratulations!", ownerId: "seed-6" },
 ];
 
 const normalizeWish = (wish: Partial<Wish>): Wish | null => {
   const name = wish.name?.trim();
   const relation = wish.relation?.trim();
   const message = wish.message?.trim();
+  const ownerId = wish.ownerId?.trim() || crypto.randomUUID();
   if (!name || !message) return null;
-  return { name, relation: relation || "Guest", message };
+  return { name, relation: relation || "Guest", message, ownerId };
 };
 
 const normalizeWishList = (value: unknown): Wish[] => {
@@ -64,6 +66,13 @@ const parseRemoteWishes = (value: unknown): Wish[] => {
 const Blessings = () => {
   const { t } = useLang();
   const ref = useReveal<HTMLDivElement>();
+  const [ownerId] = useState(() => {
+    const stored = localStorage.getItem(OWNER_ID_KEY);
+    if (stored) return stored;
+    const newId = crypto.randomUUID();
+    localStorage.setItem(OWNER_ID_KEY, newId);
+    return newId;
+  });
   const [wishes, setWishes] = useState<Wish[]>(() => parseStoredWishes(localStorage.getItem(STORAGE_KEY)) ?? seed);
   const [expanded, setExpanded] = useState(false);
   const [name, setName] = useState("");
@@ -108,7 +117,7 @@ const Blessings = () => {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const rel = relation === "Other" ? otherRelation || "Other" : relation;
-    const wish = normalizeWish({ name, relation: rel, message });
+    const wish = normalizeWish({ name, relation: rel, message, ownerId });
     if (!wish) return;
 
     setWishes((current) => [wish, ...current]);
@@ -214,18 +223,20 @@ const Blessings = () => {
         <div className="mt-14 grid gap-5 sm:grid-cols-2">
           {visibleWishes.map((w, i) => (
             <article
-              key={i}
+              key={`${w.ownerId}-${i}`}
               className="reveal in-view relative rounded-2xl border border-gold/30 bg-card p-6 shadow-soft transition-shadow hover:shadow-elegant"
               style={{ transitionDelay: `${(i % 3) * 80}ms` }}
             >
-              <button
-                type="button"
-                onClick={() => deleteWish(i)}
-                aria-label={t.bless_delete}
-                className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-gold/30 text-muted-foreground transition hover:border-destructive hover:bg-destructive hover:text-destructive-foreground"
-              >
-                <Trash2 size={14} />
-              </button>
+              {w.ownerId === ownerId && (
+                <button
+                  type="button"
+                  onClick={() => deleteWish(i)}
+                  aria-label={t.bless_delete}
+                  className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full border border-gold/30 text-muted-foreground transition hover:border-destructive hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  <Trash2 size={14} />
+                </button>
+              )}
               <Heart size={18} className="mb-3 text-gold" fill="currentColor" />
               <p className="text-sm leading-relaxed text-foreground sm:text-base">"{w.message}"</p>
               <div className="gold-divider !w-12 !my-4 !mx-0" />
