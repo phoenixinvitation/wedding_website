@@ -21,13 +21,33 @@ const Footer = () => {
             href={PHOENIX_WEBSITE_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-6 block text-xs font-normal tracking-wide text-[hsl(var(--ivory))]/65 transition hover:text-[hsl(var(--gold-light))] sm:mt-8"
+            aria-label="Visit Phoenix Invitation website"
+            className="mx-auto mt-6 flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border border-[hsl(var(--gold))]/60 bg-[hsl(var(--ivory))]/95 p-1 shadow-soft transition hover:scale-105 hover:shadow-gold sm:h-16 sm:w-16"
           >
-            Crafted with care by Phoenix
+            <img
+              src="/logo.jpeg"
+              alt="Phoenix Invitation logo"
+              className="h-full w-full rounded-full object-cover"
+              width={64}
+              height={64}
+            />
           </a>
-          <p className="mt-1 text-[11px] text-[hsl(var(--ivory))]/40">
-            Create a website like this with Phoenix
-          </p>
+          <a
+            href={PHOENIX_WEBSITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 block text-xs font-normal tracking-wide text-[hsl(var(--ivory))]/65 transition hover:text-[hsl(var(--gold-light))] sm:text-sm"
+          >
+            Crafted with care by Phoenix Invitation
+          </a>
+          <a
+            href={PHOENIX_WEBSITE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 inline-block text-[11px] text-[hsl(var(--ivory))]/45 transition hover:text-[hsl(var(--gold-light))]"
+          >
+            phoenix-invitation.vercel.app
+          </a>
         </div>
       </div>
     </footer>

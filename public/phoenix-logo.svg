@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Phoenix Invitation logo">
-  <rect width="120" height="120" rx="60" fill="#FFF8E7"/>
-  <circle cx="60" cy="60" r="57" fill="none" stroke="#D4AF37" stroke-width="2"/>
-  <g fill="#e60000">
-    <path d="M60 29c5 7 7 15 4 25 5-6 8-14 8-24 10 10 9 28-2 42 8-4 15-12 21-25 3 18-7 35-25 44l-6 19-6-19C36 82 26 65 29 47c6 13 13 21 21 25-11-14-12-32-2-42 0 10 3 18 8 24-3-10-1-18 4-25Z"/>
-    <path d="M56 45c-4 1-7 4-8 9 4-2 8-2 12 0 3-2 6-2 10 0-1-5-4-8-8-9l-2-5-4 5Z"/>
-  </g>
-  <text x="60" y="91" text-anchor="middle" fill="#111" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" letter-spacing="3">PHOENIX</text>
-</svg>

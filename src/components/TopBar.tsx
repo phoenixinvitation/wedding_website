@@ -39,8 +39,8 @@ const TopBar = () => {
         className="fixed left-3 top-3 z-50 flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-gold/60 bg-background/90 p-1.5 shadow-soft backdrop-blur-md transition-all hover:scale-105 hover:shadow-gold sm:left-5 sm:top-5 sm:h-12 sm:w-12"
       >
         <img
-          src="/phoenix-logo.svg"
-          alt="Phoenix Invitation"
+          src="/logo.jpeg"
+          alt="Phoenix Invitation logo"
           className="h-full w-full rounded-full object-cover"
           width={48}
           height={48}
